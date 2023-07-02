@@ -1,72 +1,12 @@
 #' Constructors for split objects
 #' @export
-#' @examples
-#' df <- data.frame(
-#'   year = 1900:1999,
-#'   value = 10 + 8*1900:1999 + runif(100L, 0, 100)
-#' )
-#' split_from_indices <- make_splits(
-#'   x = list(analysis = which(df$year <= 1980),
-#'            assessment = which(df$year > 1980)),
-#'   data = df
-#' )
-#' split_from_data_frame <- make_splits(
-#'   x = df[df$year <= 1980,],
-#'   assessment = df[df$year > 1980,]
-#' )
-#' identical(split_from_indices, split_from_data_frame)
-make_splits <- function(x, ...) {
-  UseMethod("make_splits")
-}
-
-#' @rdname make_splits
-#' @param x A list of integers with names "analysis" and "assessment", or a
-#' data frame of analysis or training data.
-#' @export
-make_splits.default <- function(x, ...) {
-  rlang::abort("There is no method available to make an rsplit from `x`.")
-}
-
-#' @rdname make_splits
-#' @param data A data frame.
-#' @param class An optional class to give the object.
-#' @param ... Not currently used.
-#' @export
-make_splits.list <- function(x, data, class = NULL, ...) {
+make_splits <- function(x, data, class = NULL, ...) {
   rlang::check_dots_empty()
   res <- rsplit(data, x$analysis, x$assessment)
   if (!is.null(class)) {
     res <- add_class(res, class)
   }
   res
-}
-
-#' @rdname make_splits
-#' @param assessment A data frame of assessment or testing data, which can be empty.
-#' @export
-make_splits.data.frame <- function(x, assessment, ...) {
-  rlang::check_dots_empty()
-  if (nrow(x) == 0) {
-    rlang::abort("The analysis set must contain at least one row.")
-  }
-
-  ind_analysis <- seq_len(nrow(x))
-  if (nrow(assessment) == 0) {
-    ind_assessment <- integer()
-  } else {
-    if (!identical(colnames(x), colnames(assessment))) {
-      rlang::abort("The analysis and assessment sets must have the same columns.")
-    }
-    ind_assessment <- nrow(x) + seq_len(nrow(assessment))
-  }
-
-  data <- bind_rows(x, assessment)
-  ind <- list(
-    analysis = ind_analysis,
-    assessment = ind_assessment
-  )
-
-  make_splits(ind, data)
 }
 
 merge_lists <- function(a, b) list(analysis = a, assessment = b)
