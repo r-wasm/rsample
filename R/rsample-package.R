@@ -21,7 +21,6 @@ NULL
 #' @importFrom methods formalArgs
 #' @importFrom stats quantile setNames qnorm pnorm dist
 #' @importFrom tidyselect vars_select one_of
-#' @importFrom furrr future_map
 
 #------------------------------------------------------------------------------#
 

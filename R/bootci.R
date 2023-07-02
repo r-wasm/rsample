@@ -384,7 +384,7 @@ bca_calc <- function(stats, orig_data, alpha = 0.05, .fn, ...) {
     rlang::abort("`.fn` failed.")
   }
 
-  loo_res <- furrr::future_map(loo_rs$splits, .fn, ...) %>% list_rbind()
+  loo_res <- purrr::map(loo_rs$splits, .fn, ...) %>% list_rbind()
 
   loo_estimate <-
     loo_res %>%

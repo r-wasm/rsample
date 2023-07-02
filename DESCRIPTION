@@ -23,7 +23,6 @@ Depends:
 Imports: 
     cli,
     dplyr (>= 1.1.1),
-    furrr,
     generics,
     glue,
     lifecycle,
